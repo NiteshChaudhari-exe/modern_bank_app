@@ -4,6 +4,8 @@ import Hero from './components/Hero'
 import Features from './components/Features'
 import Footer from './components/Footer'
 import DarkModeToggle from './components/DarkModeToggle'
+import AuthButton from './components/AuthButton'
+import RequireAuth from './components/RequireAuth'
 import './index.css'
 
 const Signup = lazy(() => import('./pages/Signup'))
@@ -21,6 +23,7 @@ function Header() {
           <Link to="/pricing" className="muted">Pricing</Link>
           <Link to="/contact" className="muted">Contact</Link>
           <Link to="/signup" className="btn-primary">Get started</Link>
+          <AuthButton />
           <DarkModeToggle />
         </nav>
       </div>
@@ -38,7 +41,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<><Hero /><Features /><Testimonials /><section className="section"><div className="container text-center"><a className="btn-primary" href="/signup">Create your account</a></div></section></>} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/pricing" element={<Pricing />} />
             </Routes>
