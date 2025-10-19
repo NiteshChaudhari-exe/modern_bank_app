@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postbuild": "node scripts/generate-sitemap.js",
+    "deploy:gh-pages": "gh-pages -d dist"
   },
   "author": "NiteshChaudhari-exe",
   "homepage": "https://NiteshChaudhari-exe.github.io/modern_bank_app",

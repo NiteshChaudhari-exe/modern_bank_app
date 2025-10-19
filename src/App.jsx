@@ -1,15 +1,16 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import Hero from './components/Hero'
 import Features from './components/Features'
 import Footer from './components/Footer'
-import Signup from './pages/Signup'
-import Dashboard from './pages/Dashboard'
-import Contact from './pages/Contact'
-import Pricing from './pages/Pricing'
-import Testimonials from './pages/Testimonials'
 import DarkModeToggle from './components/DarkModeToggle'
 import './index.css'
+
+const Signup = lazy(() => import('./pages/Signup'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Contact = lazy(() => import('./pages/Contact'))
+const Pricing = lazy(() => import('./pages/Pricing'))
+const Testimonials = lazy(() => import('./pages/Testimonials'))
 
 function Header() {
   return (
@@ -33,13 +34,15 @@ export default function App() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<><Hero /><Features /><Testimonials /><section className="section"><div className="container text-center"><a className="btn-primary" href="/signup">Create your account</a></div></section></>} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/pricing" element={<Pricing />} />
-          </Routes>
+          <Suspense fallback={<div className="container py-10">Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<><Hero /><Features /><Testimonials /><section className="section"><div className="container text-center"><a className="btn-primary" href="/signup">Create your account</a></div></section></>} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/pricing" element={<Pricing />} />
+            </Routes>
+          </Suspense>
         </main>
         <Footer />
       </div>

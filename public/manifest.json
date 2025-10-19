@@ -1,0 +1,15 @@
+{
+  "short_name": "ModernBank",
+  "name": "Modern Bank Website",
+  "icons": [
+    {
+      "src": "social-preview.svg",
+      "sizes": "1200x630",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0f172a",
+  "background_color": "#ffffff"
+}

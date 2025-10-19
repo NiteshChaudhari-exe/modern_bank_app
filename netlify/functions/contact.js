@@ -1,4 +1,4 @@
-exports.handler = async (event) => {
+export const handler = async (event) => {
   // Mock handler for Netlify Functions
   // In production, verify and send to email or CRM
   console.log('contact received', event.body)
