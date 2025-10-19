@@ -1,36 +1,50 @@
+
 # Modern Bank Website
 
-This repository contains the source code for the Modern Bank marketing website built with React and Vite.
-The site is a single-page marketing application demonstrating a responsive layout, modern UI components, and tooling for development and production builds.
+Production-ready marketing website built with React, Vite and Tailwind CSS.
+
+This repository contains the source for a modern, responsive marketing site for a fictional bank. The project includes a marketing UI (hero, features, pricing, testimonials), client-side routing, a protected Dashboard demo, Auth0 client integration, basic PWA support, CI workflows, and a sitemap generator.
+
+## Quick overview
+- Tech: React 19, Vite, Tailwind CSS, PostCSS, ESLint
+- Routing: react-router-dom (lazy-loaded pages)
+- Auth: Auth0 client (see `VITE_AUTH0_DOMAIN` & `VITE_AUTH0_CLIENT_ID` in `.env`)
+- PWA: `public/manifest.json` + `public/sw.js` (service worker registration in `src/registerServiceWorker.js`)
+- CI: GitHub Actions workflows in `.github/workflows/`
 
 ## Features
-- Responsive design with Tailwind CSS
-- Built with React + Vite for fast development and HMR
-- ESLint configuration for consistent code style
-- PostCSS + Autoprefixer
+- Responsive marketing pages: Hero, Features, Pricing, Testimonials, Contact
+- Client-side protected route: `/dashboard` (requires login)
+- Auth0 client integration (login / logout, protected route wrapper)
+- Sitemap generation after build (`scripts/generate-sitemap.js` -> `dist/sitemap.xml`)
+- Basic PWA manifest and service worker registration
+- ESLint flat-config and preconfigured tooling
 
-## Tech stack
-- React
-- Vite
-- Tailwind CSS
-- PostCSS
-- ESLint
-
-## Project structure
-- `index.html` — app entry HTML
-- `src/` — application source files
-	- `src/main.jsx` — app bootstrap
-	- `src/App.jsx` — primary React component
-	- `src/index.css`, `src/App.css` — styles
-	- `src/assets/` — images and static assets
-- `public/` — static public files
-- `package.json` — scripts and dependencies
-- `vite.config.js`, `postcss.config.js`, `tailwind.config.js` — build/tooling config
+## Project structure (important files)
+- `index.html` — app entry and meta tags
+- `src/main.jsx` — app bootstrap, Auth0Provider wrap, service worker registration
+- `src/App.jsx` — router, navigation, main layout
+- `src/index.css` — Tailwind entry + project utilities
+- `src/components/` — UI building blocks (Hero, Features, Footer, AuthButton, RequireAuth)
+- `src/pages/` — route pages (Signup, Pricing, Contact, Dashboard, Testimonials)
+- `public/` — static assets, icons, PWA manifest, and service worker
+- `scripts/generate-sitemap.js` — postbuild sitemap generator
+- `netlify/functions/contact.js` — mock serverless contact handler (example)
+- `eslint.config.js` — project ESLint flat-config
+- `.github/workflows/` — CI and deploy workflows
 
 ## Requirements
-
-- Node.js 16+ (recommended)
+- Node.js 18+ (recommended)
 - npm (or yarn/pnpm)
+
+## Environment variables
+Create a `.env` file in the project root (not committed) or use environment variables in your deployment platform. See `.env.example` for keys.
+
+- VITE_AUTH0_DOMAIN — your Auth0 tenant domain (e.g. `dev-abc123.us.auth0.com`)
+- VITE_AUTH0_CLIENT_ID — Auth0 Single Page App client ID
+- SITE_URL — (optional) full URL used by the sitemap generator and Open Graph metadata (e.g. `https://yourdomain.com`)
+
+Important: Vite prefixes exposed env vars with `VITE_`. Do NOT commit secrets to the repository.
 
 ## Quick start (PowerShell)
 Open PowerShell in the project root (`N:\Download\PROGRAM\Modern Bank Website\Bank Website`) and run:
@@ -44,53 +58,85 @@ npm run dev
 
 # build for production
 npm run build
+
 # preview production build locally
 npm run preview
-
 ```
-Note: On Windows PowerShell you can join commands with `;` on one line if needed.
 
-## Available npm scripts
-- `npm run dev` - start Vite dev server with HMR
-- `npm run build` - create a production build in `dist/`
-- `npm run preview` - locally preview the production build
-- `npm run lint` - run ESLint (if configured)
+If you need to run commands in one line in PowerShell, separate them with `;`.
 
-Check `package.json` for the exact script names in this repository.
-## Environment & Deployment
+## npm scripts (common)
+Most scripts are available in `package.json`. Common ones:
 
-This project is a static single-page app. You can deploy the contents of the `dist/` folder to any static hosting provider (GitHub Pages, Netlify, Vercel, Surge, S3 + CloudFront, etc.).
-If you add runtime environment variables (e.g., for analytics or API endpoints), surface them in `.env` files and document them here.
+- `dev` — start the Vite dev server
+- `build` — build for production (also runs the postbuild sitemap generator)
+- `preview` — preview the production build locally
+- `lint` — run ESLint across the source
+
+Check `package.json` for the complete list and any platform-specific scripts.
+
+## Auth0 setup (local development)
+1. Create an Auth0 application (type: Single Page Application).
+2. Add the following Allowed Callback URLs and Allowed Logout URLs in the Auth0 app settings during development:
+   - `http://localhost:5173` (adjust host/port to match `npm run dev` output)
+3. Set the `VITE_AUTH0_DOMAIN` and `VITE_AUTH0_CLIENT_ID` values in your local `.env` file.
+4. Restart the dev server if it was already running.
+
+The app wraps the React tree with `Auth0Provider` in `src/main.jsx`. Use the provided `AuthButton` component to login/logout and the `RequireAuth` wrapper to protect routes like `/dashboard`.
+
+## Deployment
+This project produces static assets in `dist/` that you can host on any static hosting provider. The repository includes a GitHub Actions deploy workflow for GitHub Pages (`.github/workflows/deploy.yml`). You can adapt or replace it with Netlify/Vercel configuration.
+
+Suggested deployment steps (GitHub Pages):
+
+1. Ensure `homepage` or `SITE_URL` is set correctly for SEO and sitemap generation.
+2. Build the project:
+
+```powershell
+npm run build
+```
+
+3. The `dist/` folder will contain the site. The CI workflow in `.github/workflows/` can deploy it automatically when configured.
+
+For Netlify/Vercel: point your deployment to run `npm ci` and `npm run build` and serve the `dist/` directory. Configure environment variables (`VITE_AUTH0_DOMAIN`, `VITE_AUTH0_CLIENT_ID`, `SITE_URL`) in the provider UI.
+
+## Scripts & automation
+- `scripts/generate-sitemap.js` runs after a successful build (configured in `package.json` `postbuild`) and writes `dist/sitemap.xml` using `SITE_URL`.
+
+## CI & quality
+- ESLint is configured via `eslint.config.js` (flat config). The GitHub Actions CI (`.github/workflows/ci.yml`) runs linting and builds on PRs and pushes.
+
+## Production considerations / next steps
+- Replace the mock serverless endpoint (`netlify/functions/contact.js`) with a real backend that validates requests and sends emails or stores leads.
+- Harden authentication: validate ID tokens server-side for any protected API endpoints.
+- Add automated tests (unit + E2E) and accessibility checks (axe). 
+- Improve PWA offline caching (Workbox) if you need offline support.
 
 ## Contributing
-Contributions are welcome. A suggested minimal workflow:
+Please use branches and PRs. Example flow:
 
-1. Fork or branch from `main`.
-2. Create a feature branch: `git checkout -b feat/your-feature`.
-3. Run and verify locally: `npm install; npm run dev`.
-4. Commit with a clear message and open a PR.
+```powershell
+git checkout -b feat/your-feature
+npm install
+npm run dev
+# work, commit, push, open PR
+```
+
+If you're submitting a PR that changes functionality, include a short description and any manual testing steps.
+
 ## License
+This repository includes a `LICENSE` file. If you need a different license, replace it with your preferred one.
 
-Include your license here (e.g., MIT). If you don't have a license yet, add one to `LICENSE` in the repo.
-## Contact
+## Where to look next
+- `src/App.jsx` — app routes and header
+- `src/main.jsx` — auth provider & service worker registration
+- `src/components/RequireAuth.jsx` — protected route wrapper
+- `scripts/generate-sitemap.js` — sitemap generator (postbuild)
 
-If you need help or want to report issues, open an issue on the repository or contact the maintainer.
 ---
 
-This README was updated to describe the Modern Bank Website project and provide development instructions specific to this repo.
-# React + Vite
+If you'd like I can also:
+- add a short `DEPLOY.md` with provider-specific steps (Netlify / Vercel / GitHub Pages)
+- add a CONTRIBUTING checklist and a minimal test harness (Vitest + Playwright)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Happy to update this README further — tell me which areas you want expanded (deploy, tests, CI secrets, or production auth server).
