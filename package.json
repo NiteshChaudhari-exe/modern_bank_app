@@ -13,7 +13,10 @@
   "homepage": "https://NiteshChaudhari-exe.github.io/modern_bank_app",
   "dependencies": {
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^6.12.1",
+    "recharts": "^2.4.4",
+    "react-hook-form": "^7.45.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
