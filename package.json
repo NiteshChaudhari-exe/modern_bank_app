@@ -9,6 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "author": "NiteshChaudhari-exe",
+  "homepage": "https://NiteshChaudhari-exe.github.io/modern_bank_app",
   "dependencies": {
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
